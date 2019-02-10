@@ -14,6 +14,7 @@ import green.yeet.snacshot.model.GroceryItem;
 
 public class ShoppingCartActivity extends AppCompatActivity {
 
+    public static final int REQUEST_JSON = 1000;
     private ListView itemList;
 
     private List<GroceryItem> groceryItems;
@@ -27,6 +28,21 @@ public class ShoppingCartActivity extends AppCompatActivity {
         itemList = findViewById(R.id.item_list);
 
         fillItems();
+        checkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ShoppingCartActivity.this, "checkout", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ItemValidationActivity.class);
+                //startActivity(intent);
+                startActivityForResult(intent, REQUEST_JSON, );
+            }
+        });
 
         CartItemAdapter cartItemAdapter = new CartItemAdapter(groceryItems, getApplicationContext());
         itemList.setAdapter(cartItemAdapter);
