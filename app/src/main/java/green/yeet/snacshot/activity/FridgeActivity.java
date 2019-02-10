@@ -6,7 +6,9 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import green.yeet.snacshot.R;
 import green.yeet.snacshot.adapter.FridgeItemAdapter;
@@ -35,8 +37,9 @@ import green.yeet.snacshot.model.GroceryItem;
 
         private void fillItems() {
             groceryItems = new ArrayList<GroceryItem>();
-            GroceryItem item1 = new GroceryItem("apple", new Date(), new Date(), new Date(), 1, 1, 1, 1, 1, 1, 1, 1, 1);
-            GroceryItem item2 = new GroceryItem("banana", new Date(), new Date(), new Date(), 1, 1, 1, 1, 1, 1, 1, 1, 1);
+            Map<String, Integer> map = new HashMap<>();
+            GroceryItem item1 = new GroceryItem("apple", map, map, 1, 1, 1, 1, 1, 1, 1, 1);
+            GroceryItem item2 = new GroceryItem("banana", map, map, 1, 1, 1, 1, 1, 1, 1, 1);
             groceryItems.add(item1);
             groceryItems.add(item2);
 

@@ -3,12 +3,12 @@ package green.yeet.snacshot.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GroceryItem {
     private String name;
+
     double calories;
     private Map<String, Integer> commitmentDate;
     private Map<String, Integer> expirationDate;
@@ -19,6 +19,7 @@ public class GroceryItem {
                        Map<String, Integer> commitmentDate, Map<String, Integer> expirationDate,
                        double calories, double totalFat, double cholesterol,
                        double sodium, double potassium, double totalCarbohydrates, double sugars, double protein) {
+
         this.name = name;
         this.commitmentDate = commitmentDate;
         this.expirationDate = expirationDate;
@@ -125,6 +126,10 @@ public class GroceryItem {
 
     public Map<String, Integer> getExpirationDate() {
         return this.expirationDate;
+    }
+
+    public double getCalories(){
+        return this.calories;
     }
 
     public double getNutrient(String key) {
