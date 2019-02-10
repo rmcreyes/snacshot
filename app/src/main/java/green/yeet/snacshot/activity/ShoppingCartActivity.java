@@ -12,6 +12,10 @@ import android.content.Intent;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +31,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private ListView itemList;
     private FloatingActionButton addButton;
     private ImageView checkoutButton;
-    private ActionBarDrawerToggle toggle;
 
     private List<GroceryItem> groceryItems;
 
@@ -62,6 +65,18 @@ public class ShoppingCartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(ShoppingCartActivity.this, "checkout", Toast.LENGTH_SHORT).show();
+                JSONArray jsonGroceryItems = new JSONArray();
+                for(GroceryItem groceryItem : groceryItems) {
+                    try {
+                        JSONObject jsonGroceryItem = new JSONObject(groceryItem.jsonify());
+                        jsonGroceryItems.put(jsonGroceryItem);
+                    } catch(JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Intent myIntent = new Intent(getApplicationContext(), FridgeActivity.class);
+                myIntent.putExtra("key", jsonGroceryItems.toString());
+                startActivity(myIntent);
             }
         });
 
@@ -86,7 +101,5 @@ public class ShoppingCartActivity extends AppCompatActivity {
         CartItemAdapter cartItemAdapter = new CartItemAdapter(groceryItems, getApplicationContext());
         itemList.setAdapter(cartItemAdapter);
     }
-
-
 
 }
