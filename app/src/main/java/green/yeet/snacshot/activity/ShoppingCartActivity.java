@@ -1,7 +1,12 @@
 package green.yeet.snacshot.activity;
 
+import android.content.Intent;
+import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -18,6 +23,8 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
     private List<GroceryItem> groceryItems;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +34,15 @@ public class ShoppingCartActivity extends AppCompatActivity {
         itemList = findViewById(R.id.item_list);
 
         fillItems();
+
+        FloatingActionButton addItemButton = findViewById(R.id.fab);
+        addItemButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ItemValidationActivity.class);
+                startActivity(intent);
+            }
+        });
 
         CartItemAdapter cartItemAdapter = new CartItemAdapter(groceryItems, getApplicationContext());
         itemList.setAdapter(cartItemAdapter);
