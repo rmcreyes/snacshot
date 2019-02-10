@@ -54,8 +54,5 @@ public class FridgeItemAdapter extends BaseAdapter {
         return fridgeItemView;
     }
 
-    private String stringifyMacroVal(int val) {
-        return Integer.toString(val) ;
-    }
 
 }
