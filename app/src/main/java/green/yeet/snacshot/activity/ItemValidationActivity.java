@@ -121,14 +121,120 @@ public class ItemValidationActivity extends AppCompatActivity {
         Log.e("", Integer.toString(barcodes.size()));
         if(barcodes.size()>0){
             barcode = barcodes.valueAt(0);
-            Log.i("", barcode.rawValue);
-            itemName.setText(barcode.rawValue);
+            Log.i("", barcode.displayValue);
+            itemName.setText(barcode.displayValue);
+            final RequestQueue queue = Volley.newRequestQueue(this);
+            String url = String.format("https://api.nal.usda.gov/ndb/search/?format=json&q=%s&sort=n&max=25&offset=0&api_key=2QXWEBqeHCCB8b7pk0u7gF4LXWbsmS0PNlaQBUp0", barcode.displayValue);
+            JsonObjectRequest request = new JsonObjectRequest(url, null,
+                    new Response.Listener<JSONObject>(){
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            if (null != response) {
+                                try{
+                                    JSONObject jsonResponse = (JSONObject)response.get("list");
+                                    JSONArray items = (JSONArray)jsonResponse.get("item");
+                                    JSONObject item = (JSONObject) items.get(0);
+                                    String ndbno = (String)item.get("ndbno");
+
+                                    String url2 = String.format("https://api.nal.usda.gov/ndb/V2/reports?ndbno=%s&type=b&format=json&api_key=2QXWEBqeHCCB8b7pk0u7gF4LXWbsmS0PNlaQBUp0", ndbno);
+                                    Log.i("", "onResponse: " + url2);
+                                    JsonObjectRequest request1 = new JsonObjectRequest(url2, null,
+                                            new Response.Listener<JSONObject>(){
+                                                @Override
+                                                public void onResponse(JSONObject response) {
+                                                    if (null != response) {
+                                                        try{
+                                                            JSONArray foods = (JSONArray) response.get("foods");
+                                                            JSONObject food = (JSONObject) foods.get(0);
+                                                            JSONObject food1 = (JSONObject) food.get("food");
+                                                            JSONObject foodDesc = (JSONObject) food1.get("desc");
+                                                            JSONArray nutrients = (JSONArray) food1.get("nutrients");
+
+                                                            float totalFat = 0;
+                                                            float cholesterol = 0;
+                                                            float sodium = 0;
+                                                            float potassium = 0;
+                                                            float totalCarb = 0;
+                                                            float sugars = 0;
+                                                            float proteins = 0;
+                                                            float nutrientsSeen = 0;
+                                                            for(int i = 0; i<nutrients.length(); i++){
+                                                                if(nutrientsSeen>7){
+                                                                    break;
+                                                                }
+                                                                JSONObject nutrient = (JSONObject)nutrients.get(i);
+                                                                String nutrient_id = nutrient.get("nutrient_id").toString();
+                                                                if(nutrient_id.equals("204")){
+                                                                    totalFat = Float.parseFloat(nutrient.get("value").toString());
+                                                                    nutrientsSeen+=1;
+                                                                }
+                                                                else if(nutrient_id.equals("601")){
+                                                                    cholesterol = Float.parseFloat(nutrient.get("value").toString());
+                                                                    nutrientsSeen+=1;
+                                                                }
+                                                                else if(nutrient_id.equals("307")){
+                                                                    sodium = Float.parseFloat(nutrient.get("value").toString());
+                                                                    nutrientsSeen+=1;
+                                                                }
+                                                                else if(nutrient_id.equals("306")){
+                                                                    potassium = Float.parseFloat(nutrient.get("value").toString());
+                                                                    nutrientsSeen+=1;
+                                                                }
+                                                                else if(nutrient_id.equals("205")){
+                                                                    totalCarb = Float.parseFloat(nutrient.get("value").toString());
+                                                                    nutrientsSeen+=1;
+                                                                }
+                                                                else if(nutrient_id.equals("269")){
+                                                                    sugars = Float.parseFloat(nutrient.get("value").toString());
+                                                                    nutrientsSeen+=1;
+                                                                }
+                                                                else if(nutrient_id.equals("203")){
+                                                                    proteins = Float.parseFloat(nutrient.get("value").toString());
+                                                                    nutrientsSeen+=1;
+                                                                }
+                                                            }
+                                                            float calories = totalCarb * 4 + proteins * 4 + totalFat * 9;
+                                                            groceryItem = new GroceryItem(foodDesc.get("name").toString(), new Date(), new Date(), new Date(), 1, calories, totalFat, cholesterol,sodium, potassium, totalCarb, sugars, proteins);
+                                                            caloriesText.setText("Calories: "+groceryItem.getNutrient("calories")+"kCal");
+                                                            fatText.setText("Fat: "+groceryItem.getNutrient("totalFat")+"g");
+                                                            cholestrolText.setText("Cholesterol: "+groceryItem.getNutrient("cholesterol")+"mg");
+                                                            sodiumText.setText("Sodium: "+groceryItem.getNutrient("sodium")+"mg");
+                                                            potassiumText.setText("Potassium: "+groceryItem.getNutrient("potassium")+"mg");
+                                                            carbText.setText("Carb: "+groceryItem.getNutrient("totalCarbohydrates")+"g");
+                                                            sugarsText.setText("Sugars: "+groceryItem.getNutrient("sugars")+"g");
+                                                            proteinsText.setText("Proteins: "+groceryItem.getNutrient("protein")+"g");
+                                                            itemName.setText(groceryItem.getName());
+                                                        }catch (JSONException e){
+
+                                                        }
+
+
+                                                    }
+                                                }
+                                            }, new Response.ErrorListener() {
+
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+
+                                        }
+                                    });
+                                    queue.add(request1);
+                                }catch (JSONException e){
+
+                                }
 
 
 
+                            }
+                        }
+                    }, new Response.ErrorListener() {
 
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
-
+                }
+            });
+            queue.add(request);
 
 
         }else{
