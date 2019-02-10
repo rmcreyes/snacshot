@@ -1,16 +1,16 @@
-package model;
+package green.yeet.snacshot.model;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GroceryItem {
-    String name;
-    Date commitmentDate;
-    Date purchasedDate;
-    Date expirationDate;
-    Map<String, Integer> nutrients;
-    int quantity;
+    private String name;
+    private Date commitmentDate;
+    private Date purchasedDate;
+    private Date expirationDate;
+    private Map<String, Integer> nutrients;
+    private int quantity;
 
 
     public GroceryItem(String name,
@@ -42,7 +42,6 @@ public class GroceryItem {
         this.name = name;
     }
 
-
     public Date getCommitmentDateDate() {
         return this.commitmentDate;
     }
@@ -57,6 +56,10 @@ public class GroceryItem {
 
     public Date getExpirationDate() {
         return this.expirationDate;
+    }
+
+    public int getNutrient(String key) {
+        return this.nutrients.get(key);
     }
 
 }
