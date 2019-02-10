@@ -3,4 +3,8 @@
 
     <dimen name="cart_item_macro_label_value_spacing">3dp</dimen>
     <dimen name="cart_item_macro_type_spacing">10dp</dimen>
+
+    <dimen name="progress_label_border_spacing">3dp</dimen>
+    <dimen name="progress_label_value_spacing">8dp</dimen>
+    <dimen name="progressbar_margin">8dp</dimen>
 </resources>
