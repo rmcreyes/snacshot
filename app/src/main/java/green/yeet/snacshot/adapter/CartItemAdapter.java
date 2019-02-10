@@ -57,7 +57,7 @@ public class CartItemAdapter extends BaseAdapter {
         return cartItemView;
     }
 
-    private String stringifyMacroVal(int val) {
-        return Integer.toString(val) + "g";
+    private String stringifyMacroVal(float val) {
+        return Float.toString(val) + "g";
     }
 }

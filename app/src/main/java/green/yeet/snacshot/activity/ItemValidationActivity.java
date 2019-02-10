@@ -23,6 +23,7 @@ import clarifai2.dto.input.ClarifaiInput;
 import clarifai2.dto.model.ConceptModel;
 import clarifai2.dto.model.output.ClarifaiOutput;
 import clarifai2.dto.prediction.Concept;
+import green.yeet.snacshot.model.GroceryItem;
 import okhttp3.OkHttpClient;
 
 import green.yeet.snacshot.R;
@@ -35,9 +36,6 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +43,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -52,6 +51,17 @@ public class ItemValidationActivity extends AppCompatActivity {
 
     ImageView itemImage;
     TextView itemName;
+    GroceryItem groceryItem;
+
+    TextView caloriesText;
+    TextView fatText;
+    TextView cholestrolText;
+    TextView sodiumText;
+    TextView potassiumText;
+    TextView carbText;
+    TextView sugarsText;
+    TextView proteinsText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +72,14 @@ public class ItemValidationActivity extends AppCompatActivity {
         Button cameraBtn = (Button)findViewById(R.id.camera_btn);
         itemImage = (ImageView)findViewById(R.id.item_img);
         itemName = (TextView)findViewById(R.id.Item_Title);
+        caloriesText = findViewById(R.id.calories_text);
+        fatText = findViewById(R.id.fat_text);
+        cholestrolText = findViewById(R.id.cholesterol_text);
+        sodiumText = findViewById(R.id.sodium_text);
+        potassiumText = findViewById(R.id.potassium_text);
+        carbText = findViewById(R.id.carb_text);
+        sugarsText = findViewById(R.id.sugars_text);
+        proteinsText = findViewById(R.id.proteins_text);
 
         cameraBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -167,6 +185,8 @@ public class ItemValidationActivity extends AppCompatActivity {
                                             String url2 = String.format("https://api.nal.usda.gov/ndb/V2/reports?ndbno=%s&type=b&format=json&api_key=DEMO_KEY", ndbno);
 
 
+
+
                                             JsonObjectRequest request1 = new JsonObjectRequest(url2, null,
                                                     new Response.Listener<JSONObject>(){
                                                         @Override
@@ -177,9 +197,60 @@ public class ItemValidationActivity extends AppCompatActivity {
                                                                     JSONObject food = (JSONObject) foods.get(0);
                                                                     JSONObject food1 = (JSONObject) food.get("food");
                                                                     JSONArray nutrients = (JSONArray) food1.get("nutrients");
+
+                                                                    float totalFat = 0;
+                                                                    float cholesterol = 0;
+                                                                    float sodium = 0;
+                                                                    float potassium = 0;
+                                                                    float totalCarb = 0;
+                                                                    float sugars = 0;
+                                                                    float proteins = 0;
+                                                                    float nutrientsSeen = 0;
                                                                     for(int i = 0; i<nutrients.length(); i++){
-                                                                        Log.e("MyApp", nutrients.get(i).toString());
+                                                                        if(nutrientsSeen>7){
+                                                                            break;
+                                                                        }
+                                                                        JSONObject nutrient = (JSONObject)nutrients.get(i);
+                                                                        String nutrient_id = nutrient.get("nutrient_id").toString();
+                                                                        if(nutrient_id.equals("204")){
+                                                                            totalFat = Float.parseFloat(nutrient.get("value").toString());
+                                                                            nutrientsSeen+=1;
+                                                                        }
+                                                                        else if(nutrient_id.equals("601")){
+                                                                            cholesterol = Float.parseFloat(nutrient.get("value").toString());
+                                                                            nutrientsSeen+=1;
+                                                                        }
+                                                                        else if(nutrient_id.equals("307")){
+                                                                            sodium = Float.parseFloat(nutrient.get("value").toString());
+                                                                            nutrientsSeen+=1;
+                                                                        }
+                                                                        else if(nutrient_id.equals("306")){
+                                                                            potassium = Float.parseFloat(nutrient.get("value").toString());
+                                                                            nutrientsSeen+=1;
+                                                                        }
+                                                                        else if(nutrient_id.equals("205")){
+                                                                            totalCarb = Float.parseFloat(nutrient.get("value").toString());
+                                                                            nutrientsSeen+=1;
+                                                                        }
+                                                                        else if(nutrient_id.equals("269")){
+                                                                            sugars = Float.parseFloat(nutrient.get("value").toString());
+                                                                            nutrientsSeen+=1;
+                                                                        }
+                                                                        else if(nutrient_id.equals("203")){
+                                                                            proteins = Float.parseFloat(nutrient.get("value").toString());
+                                                                            nutrientsSeen+=1;
+                                                                        }
                                                                     }
+                                                                    float calories = totalCarb * 4 + proteins * 4 + totalFat * 9;
+                                                                    groceryItem = new GroceryItem(ret.get(0).data().get(0).name(), new Date(), new Date(), new Date(), 1, calories, totalFat, cholesterol,sodium, potassium, totalCarb, sugars, proteins);
+                                                                    caloriesText.setText("Calories: "+groceryItem.getNutrient("calories")+"kCal");
+                                                                    fatText.setText("Fat: "+groceryItem.getNutrient("totalFat")+"g");
+                                                                    cholestrolText.setText("Cholesterol: "+groceryItem.getNutrient("cholesterol")+"mg");
+                                                                    sodiumText.setText("Sodium: "+groceryItem.getNutrient("sodium")+"mg");
+                                                                    potassiumText.setText("Potassium: "+groceryItem.getNutrient("potassium")+"mg");
+                                                                    carbText.setText("Carb: "+groceryItem.getNutrient("totalCarbohydrates")+"g");
+                                                                    sugarsText.setText("Sugars: "+groceryItem.getNutrient("sugars")+"g");
+                                                                    proteinsText.setText("Proteins: "+groceryItem.getNutrient("protein")+"g");
 
                                                                 }catch (JSONException e){
 

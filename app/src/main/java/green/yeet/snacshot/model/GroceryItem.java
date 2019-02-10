@@ -9,20 +9,21 @@ public class GroceryItem {
     private Date commitmentDate;
     private Date purchasedDate;
     private Date expirationDate;
-    private Map<String, Integer> nutrients;
+    private Map<String, Float> nutrients;
     private int quantity;
 
 
     public GroceryItem(String name,
                        Date commitmentDate, Date purchasedDate, Date expirationDate,
-                       int quantity, int calories, int totalFat, int cholesterol,
-                       int sodium, int potassium, int totalCarbohydrates, int sugars, int protein) {
+                       int quantity, float calories, float totalFat, float cholesterol,
+                       float sodium, float potassium, float totalCarbohydrates, float sugars, float protein) {
         this.name = name;
         this.commitmentDate = commitmentDate;
         this.purchasedDate = purchasedDate;
         this.expirationDate = expirationDate;
         this.quantity = quantity;
-        this.nutrients = new HashMap<String, Integer>();
+        this.nutrients = new HashMap<String, Float>();
+        this.nutrients.put("calories", calories);
         this.nutrients.put("totalFat", totalFat);
         this.nutrients.put("cholesterol", cholesterol);
         this.nutrients.put("sodium", sodium);
@@ -58,7 +59,7 @@ public class GroceryItem {
         return this.expirationDate;
     }
 
-    public int getNutrient(String key) {
+    public float getNutrient(String key) {
         return this.nutrients.get(key);
     }
 
