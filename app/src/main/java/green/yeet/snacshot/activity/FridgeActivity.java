@@ -2,11 +2,14 @@ package green.yeet.snacshot.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuView;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +24,7 @@ import green.yeet.snacshot.model.GroceryItem;
 
     public class FridgeActivity extends AppCompatActivity {
 
+        private static final int ADD_ITEM = 0;
         private ListView itemList;
 
         private List<GroceryItem> groceryItems;
@@ -31,6 +35,7 @@ import green.yeet.snacshot.model.GroceryItem;
             setContentView(R.layout.activity_fridge);
             setTitle("Fridge");
 
+            groceryItems = new ArrayList<GroceryItem>();
 
             itemList = findViewById(R.id.item_list);
 
@@ -49,6 +54,8 @@ import green.yeet.snacshot.model.GroceryItem;
                     startActivity(myIntent);
                 }
             });
+
+
 
             itemList.setAdapter(fridgeItemAdapter);
         }
