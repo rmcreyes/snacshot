@@ -51,13 +51,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
         itemList = findViewById(R.id.item_list);
         addButton = findViewById(R.id.add_btn);
 
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ShoppingCartActivity.this, "add food", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         checkoutButton = findViewById(R.id.checkout_btn);
         View nutritionBottomSheet = findViewById(R.id.nutrients_bottom_sheet);
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(nutritionBottomSheet);
@@ -80,8 +73,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton addItemButton = findViewById(R.id.fab);
-        addItemButton.setOnClickListener(new View.OnClickListener() {
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ItemValidationActivity.class);
