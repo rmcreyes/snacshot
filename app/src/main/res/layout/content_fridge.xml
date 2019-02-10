@@ -76,6 +76,7 @@
                         android:id="@+id/expiry_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="right"
                         android:layout_marginRight="@dimen/cart_item_macro_label_value_spacing"
                         android:text="Expiry Date:" />
 
@@ -90,6 +91,7 @@
                         android:id="@+id/purchased_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity = "center"
                         android:layout_marginRight="@dimen/cart_item_macro_label_value_spacing"
                         android:text="Purchased Date:" />
 
