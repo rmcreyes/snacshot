@@ -1,5 +1,6 @@
 package green.yeet.snacshot.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuView;
@@ -9,7 +10,9 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import green.yeet.snacshot.R;
 import green.yeet.snacshot.adapter.FridgeItemAdapter;
@@ -41,7 +44,9 @@ import green.yeet.snacshot.model.GroceryItem;
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     GroceryItem tappedGroceryItem = groceryItems.get(position);
-
+                    Intent myIntent = new Intent(getApplicationContext(), ItemInfoActivity.class);
+                    myIntent.putExtra("itemString", tappedGroceryItem.jsonify());
+                    startActivity(myIntent);
                 }
             });
 
@@ -49,11 +54,12 @@ import green.yeet.snacshot.model.GroceryItem;
         }
 
 
-
         private void fillItems() {
+            Map<String, Integer> commitmentDate = new HashMap<String, Integer>();
+            Map<String, Integer> expirationDate = new HashMap<String, Integer>();
             groceryItems = new ArrayList<GroceryItem>();
-            GroceryItem item1 = new GroceryItem("apple", new Date(), new Date(), new Date(), 1, 1, 1, 1, 1, 1, 1, 1, 1);
-            GroceryItem item2 = new GroceryItem("banana", new Date(), new Date(), new Date(), 1, 1, 1, 1, 1, 1, 1, 1, 1);
+            GroceryItem item1 = new GroceryItem("Apple", commitmentDate, expirationDate, 50,4,6,7,3,80,80,35 );
+            GroceryItem item2 = new GroceryItem("Orange", commitmentDate, expirationDate, 80,5,6,7,9,90,120,25 );
             groceryItems.add(item1);
             groceryItems.add(item2);
 
