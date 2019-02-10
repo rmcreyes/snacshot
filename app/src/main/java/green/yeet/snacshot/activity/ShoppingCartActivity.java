@@ -12,6 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.content.Intent;
+import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,6 +38,8 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private ActionBarDrawerToggle toggle;
 
     private List<GroceryItem> groceryItems;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +77,15 @@ public class ShoppingCartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(ShoppingCartActivity.this, "checkout", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        FloatingActionButton addItemButton = findViewById(R.id.fab);
+        addItemButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ItemValidationActivity.class);
+                startActivity(intent);
             }
         });
 

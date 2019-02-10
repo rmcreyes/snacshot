@@ -26,9 +26,22 @@ import clarifai2.dto.prediction.Concept;
 import okhttp3.OkHttpClient;
 
 import green.yeet.snacshot.R;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -68,6 +81,7 @@ public class ItemValidationActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -91,12 +105,22 @@ public class ItemValidationActivity extends AppCompatActivity {
             barcode = barcodes.valueAt(0);
             Log.i("", barcode.rawValue);
             itemName.setText(barcode.rawValue);
+
+
+
+
+
+
+
+
         }else{
             final ClarifaiClient client = new ClarifaiBuilder("f40dfc5d59b145bdbcfcf04fd1589ed6")
                     .client(new OkHttpClient()) // OPTIONAL. Allows customization of OkHttp by the user
                     .buildSync(); // or use .build() to get a Future<ClarifaiClient>
 
             final List<ClarifaiOutput<Concept>> ret = new ArrayList<>();
+            final RequestQueue queue = Volley.newRequestQueue(this);
+
 
             new AsyncTask<Void, Void, ClarifaiResponse<List<ClarifaiOutput<Concept>>>>() {
                 @Override protected ClarifaiResponse<List<ClarifaiOutput<Concept>>> doInBackground(Void... params) {
@@ -128,6 +152,66 @@ public class ItemValidationActivity extends AppCompatActivity {
                         }
 
                     }
+                    String url = String.format("https://api.nal.usda.gov/ndb/search/?format=json&q=%s&sort=n&max=25&offset=0&api_key=ppIHrzWv5bAtL13b3eGGk8sjxvro46UG7dDeBVEH", ret.get(0).data().get(0).name());
+                    JsonObjectRequest request = new JsonObjectRequest(url, null,
+                            new Response.Listener<JSONObject>(){
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    if (null != response) {
+                                        try{
+                                            JSONObject jsonResponse = (JSONObject)response.get("list");
+                                            JSONArray items = (JSONArray)jsonResponse.get("item");
+                                            JSONObject item = (JSONObject) items.get(0);
+                                            String ndbno = (String)item.get("ndbno");
+
+                                            String url2 = String.format("https://api.nal.usda.gov/ndb/V2/reports?ndbno=%s&type=b&format=json&api_key=DEMO_KEY", ndbno);
+
+
+                                            JsonObjectRequest request1 = new JsonObjectRequest(url2, null,
+                                                    new Response.Listener<JSONObject>(){
+                                                        @Override
+                                                        public void onResponse(JSONObject response) {
+                                                            if (null != response) {
+                                                                try{
+                                                                    JSONArray foods = (JSONArray) response.get("foods");
+                                                                    JSONObject food = (JSONObject) foods.get(0);
+                                                                    JSONObject food1 = (JSONObject) food.get("food");
+                                                                    JSONArray nutrients = (JSONArray) food1.get("nutrients");
+                                                                    for(int i = 0; i<nutrients.length(); i++){
+                                                                        Log.e("MyApp", nutrients.get(i).toString());
+                                                                    }
+
+                                                                }catch (JSONException e){
+
+                                                                }
+
+
+                                                            }
+                                                        }
+                                                    }, new Response.ErrorListener() {
+
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+
+                                                }
+                                            });
+                                            queue.add(request1);
+                                        }catch (JSONException e){
+
+                                        }
+
+
+
+                                    }
+                                }
+                            }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    });
+                    queue.add(request);
                     itemName.setText(ret.get(0).data().get(0).name());
 
                 }
