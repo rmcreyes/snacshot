@@ -43,8 +43,11 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class ItemValidationActivity extends AppCompatActivity {
@@ -102,6 +105,11 @@ public class ItemValidationActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final Map<String, Integer> curDate = new HashMap<>();
+        curDate.put("month",  Calendar.MONTH);
+        curDate.put("day", Calendar.DATE);
+        curDate.put("year", Calendar.YEAR);
+
         super.onActivityResult(requestCode, resultCode, data);
         final Bitmap bitmap = (Bitmap) data.getExtras().get("data");
         itemImage.setImageBitmap(bitmap);
@@ -150,14 +158,14 @@ public class ItemValidationActivity extends AppCompatActivity {
                                                             JSONObject foodDesc = (JSONObject) food1.get("desc");
                                                             JSONArray nutrients = (JSONArray) food1.get("nutrients");
 
-                                                            float totalFat = 0;
-                                                            float cholesterol = 0;
-                                                            float sodium = 0;
-                                                            float potassium = 0;
-                                                            float totalCarb = 0;
-                                                            float sugars = 0;
-                                                            float proteins = 0;
-                                                            float nutrientsSeen = 0;
+                                                            double totalFat = 0;
+                                                            double cholesterol = 0;
+                                                            double sodium = 0;
+                                                            double potassium = 0;
+                                                            double totalCarb = 0;
+                                                            double sugars = 0;
+                                                            double proteins = 0;
+                                                            double nutrientsSeen = 0;
                                                             for(int i = 0; i<nutrients.length(); i++){
                                                                 if(nutrientsSeen>7){
                                                                     break;
@@ -193,8 +201,9 @@ public class ItemValidationActivity extends AppCompatActivity {
                                                                     nutrientsSeen+=1;
                                                                 }
                                                             }
-                                                            float calories = totalCarb * 4 + proteins * 4 + totalFat * 9;
-                                                            groceryItem = new GroceryItem(foodDesc.get("name").toString(), new Date(), new Date(), new Date(), 1, calories, totalFat, cholesterol,sodium, potassium, totalCarb, sugars, proteins);
+
+                                                            double calories = totalCarb * 4 + proteins * 4 + totalFat * 9;
+                                                            groceryItem = new GroceryItem(foodDesc.get("name").toString(), curDate, curDate, calories, totalFat, cholesterol,sodium, potassium, totalCarb, sugars, proteins);
                                                             caloriesText.setText("Calories: "+groceryItem.getNutrient("calories")+"kCal");
                                                             fatText.setText("Fat: "+groceryItem.getNutrient("totalFat")+"g");
                                                             cholestrolText.setText("Cholesterol: "+groceryItem.getNutrient("cholesterol")+"mg");
@@ -348,15 +357,15 @@ public class ItemValidationActivity extends AppCompatActivity {
                                                                         }
                                                                     }
                                                                     float calories = totalCarb * 4 + proteins * 4 + totalFat * 9;
-                                                                    groceryItem = new GroceryItem(ret.get(0).data().get(0).name(), new Date(), new Date(), new Date(), 1, calories, totalFat, cholesterol,sodium, potassium, totalCarb, sugars, proteins);
-                                                                    caloriesText.setText("Calories: "+groceryItem.getNutrient("calories")+"kCal");
-                                                                    fatText.setText("Fat: "+groceryItem.getNutrient("totalFat")+"g");
-                                                                    cholestrolText.setText("Cholesterol: "+groceryItem.getNutrient("cholesterol")+"mg");
-                                                                    sodiumText.setText("Sodium: "+groceryItem.getNutrient("sodium")+"mg");
-                                                                    potassiumText.setText("Potassium: "+groceryItem.getNutrient("potassium")+"mg");
-                                                                    carbText.setText("Carb: "+groceryItem.getNutrient("totalCarbohydrates")+"g");
-                                                                    sugarsText.setText("Sugars: "+groceryItem.getNutrient("sugars")+"g");
-                                                                    proteinsText.setText("Proteins: "+groceryItem.getNutrient("protein")+"g");
+                                                                    groceryItem = new GroceryItem(ret.get(0).data().get(0).name(), curDate, curDate, calories, totalFat, cholesterol,sodium, potassium, totalCarb, sugars, proteins);
+                                                                    caloriesText.setText("Calories: "+Math.floor(groceryItem.getCalories())+"g");
+                                                                    fatText.setText("Fat: "+Math.floor(groceryItem.getNutrient("totalFat"))+"g");
+                                                                    cholestrolText.setText("Cholesterol: "+Math.floor(groceryItem.getNutrient("cholesterol"))+"mg");
+                                                                    sodiumText.setText("Sodium: "+Math.floor(groceryItem.getNutrient("sodium"))+"mg");
+                                                                    potassiumText.setText("Potassium: "+Math.floor(groceryItem.getNutrient("potassium"))+"mg");
+                                                                    carbText.setText("Carb: "+Math.floor(groceryItem.getNutrient("totalCarbohydrates"))+"g");
+                                                                    sugarsText.setText("Sugars: "+Math.floor(groceryItem.getNutrient("sugars"))+"g");
+                                                                    proteinsText.setText("Proteins: "+Math.floor(groceryItem.getNutrient("protein"))+"g");
 
                                                                 }catch (JSONException e){
 

@@ -1,29 +1,30 @@
 package green.yeet.snacshot.model;
 
-import java.util.Date;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class GroceryItem {
     private String name;
-    private Date commitmentDate;
-    private Date purchasedDate;
-    private Date expirationDate;
-    private Map<String, Float> nutrients;
-    private int quantity;
+
+    double calories;
+    private Map<String, Integer> commitmentDate;
+    private Map<String, Integer> expirationDate;
+    private Map<String, Double> nutrients;
 
 
     public GroceryItem(String name,
-                       Date commitmentDate, Date purchasedDate, Date expirationDate,
-                       int quantity, float calories, float totalFat, float cholesterol,
-                       float sodium, float potassium, float totalCarbohydrates, float sugars, float protein) {
+                       Map<String, Integer> commitmentDate, Map<String, Integer> expirationDate,
+                       double calories, double totalFat, double cholesterol,
+                       double sodium, double potassium, double totalCarbohydrates, double sugars, double protein) {
+
         this.name = name;
         this.commitmentDate = commitmentDate;
-        this.purchasedDate = purchasedDate;
         this.expirationDate = expirationDate;
-        this.quantity = quantity;
-        this.nutrients = new HashMap<String, Float>();
-        this.nutrients.put("calories", calories);
+        this.calories = calories;
+        this.nutrients = new HashMap<String, Double>();
         this.nutrients.put("totalFat", totalFat);
         this.nutrients.put("cholesterol", cholesterol);
         this.nutrients.put("sodium", sodium);
@@ -31,8 +32,80 @@ public class GroceryItem {
         this.nutrients.put("totalCarbohydrates", totalCarbohydrates);
         this.nutrients.put("sugars", sugars);
         this.nutrients.put("protein", protein);
+    }
 
+    public GroceryItem(String json) {
+        try {
+            JSONObject jsonGroceryItem = new JSONObject(json);
+            this.name = jsonGroceryItem.getString("name");
 
+            Map<String, Integer> commitmentDate = new HashMap<String, Integer>();
+            JSONObject jsonCommitmentDate = new JSONObject(jsonGroceryItem.getString("commitmentDate"));
+            commitmentDate.put("day", jsonCommitmentDate.getInt("day"));
+            commitmentDate.put("month", jsonCommitmentDate.getInt("month"));
+            commitmentDate.put("year", jsonCommitmentDate.getInt("year"));
+            this.commitmentDate = commitmentDate;
+
+            Map<String, Integer> expirationDate = new HashMap<String, Integer>();
+            JSONObject jsonExpirationDate = new JSONObject(jsonGroceryItem.getString("expirationDate"));
+            commitmentDate.put("day", jsonExpirationDate.getInt("day"));
+            commitmentDate.put("month", jsonExpirationDate.getInt("month"));
+            commitmentDate.put("year", jsonExpirationDate.getInt("year"));
+            this.expirationDate = expirationDate;
+
+            this.calories = jsonGroceryItem.getDouble("calories");
+
+            Map<String, Double> nutrients = new HashMap<String, Double>();
+            JSONObject jsonNutrients = new JSONObject(jsonGroceryItem.getString("jsonNutrients"));
+            nutrients.put("totalFat", jsonNutrients.getDouble("totalFat"));
+            nutrients.put("cholesterol", jsonNutrients.getDouble("cholesterol"));
+            nutrients.put("sodium", jsonNutrients.getDouble("sodium"));
+            nutrients.put("potassium", jsonNutrients.getDouble("potassium"));
+            nutrients.put("totalCarbohydrates", jsonNutrients.getDouble("totalCarbohydrates"));
+            nutrients.put("sugars", jsonNutrients.getDouble("sugars"));
+            nutrients.put("protein", jsonNutrients.getDouble("protein"));
+
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public String jsonify() {
+        JSONObject jsonGroceryItem = new JSONObject();
+        try {
+            jsonGroceryItem.put("name", name);
+
+            JSONObject jsonCommitmentDate  = new JSONObject();
+            jsonCommitmentDate.put("day", this.commitmentDate.get("day"));
+            jsonCommitmentDate.put("month", this.commitmentDate.get("month"));
+            jsonCommitmentDate.put("year", this.commitmentDate.get("year"));
+            jsonGroceryItem.put("commitmentDate", jsonCommitmentDate.toString());
+
+            JSONObject jsonExpirationDate = new JSONObject();
+            jsonExpirationDate.put("day", this.commitmentDate.get("day"));
+            jsonExpirationDate.put("month", this.commitmentDate.get("month"));
+            jsonExpirationDate.put("year", this.commitmentDate.get("year"));
+            jsonGroceryItem.put("expirationDate", jsonGroceryItem.toString());
+
+            jsonGroceryItem.put("calories", calories);
+
+            JSONObject jsonNutrients = new JSONObject();
+            jsonNutrients.put("totalFat", nutrients.get("totalFat"));
+            jsonNutrients.put("cholesterol", nutrients.get("cholesterol"));
+            jsonNutrients.put("sodium", nutrients.get("sodium"));
+            jsonNutrients.put("potassium", nutrients.get("potassium"));
+            jsonNutrients.put("totalCarbohydrates", nutrients.get("totalCarbohydrates"));
+            jsonNutrients.put("sugar", nutrients.get("sugar"));
+            jsonNutrients.put("protein", nutrients.get("protein"));
+            jsonGroceryItem.put("nutrients", jsonNutrients.toString());
+
+            return jsonGroceryItem.toString();
+
+        } catch(JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String getName() {
@@ -43,23 +116,23 @@ public class GroceryItem {
         this.name = name;
     }
 
-    public Date getCommitmentDateDate() {
+    public Map<String, Integer> getCommitmentDateDate() {
         return this.commitmentDate;
     }
 
-    public void setCommitmentDate(Date commitmentDate) {
+    public void setCommitmentDate(Map<String, Integer> commitmentDate) {
         this.commitmentDate = commitmentDate;
     }
 
-    public Date getPurchasedDateDate() {
-        return this.purchasedDate;
-    }
-
-    public Date getExpirationDate() {
+    public Map<String, Integer> getExpirationDate() {
         return this.expirationDate;
     }
 
-    public float getNutrient(String key) {
+    public double getCalories(){
+        return this.calories;
+    }
+
+    public double getNutrient(String key) {
         return this.nutrients.get(key);
     }
 
