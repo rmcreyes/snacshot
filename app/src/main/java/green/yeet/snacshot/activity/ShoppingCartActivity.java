@@ -1,24 +1,14 @@
 package green.yeet.snacshot.activity;
-
-import android.content.DialogInterface;
-import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.content.Intent;
-import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -105,15 +95,15 @@ public class ShoppingCartActivity extends AppCompatActivity {
         itemList.setAdapter(cartItemAdapter);
     }
 
-//    private void fillItems() {
-//        groceryItems = new ArrayList<GroceryItem>();
-//        GroceryItem item1 = new GroceryItem("apple", new Date(), new Date(), new Date(), 1, 1, 1, 1, 1, 1, 1, 1, 1);
-//        GroceryItem item2 = new GroceryItem("banana", new Date(), new Date(), new Date(), 1, 1, 1, 1, 1, 1, 1, 1, 1);
-//        GroceryItem item3 = new GroceryItem("orange", new Date(), new Date(), new Date(), 1, 1, 1, 1, 1, 1, 1, 1, 1);
-//        groceryItems.add(item1);
-//        groceryItems.add(item2);
-//        groceryItems.add(item3);
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        String newGroceryItem_s = data.getStringExtra("key");
+        GroceryItem newGroceryItem = new GroceryItem(newGroceryItem_s);
+        groceryItems.add(newGroceryItem);
+        CartItemAdapter cartItemAdapter = new CartItemAdapter(groceryItems, getApplicationContext());
+        itemList.setAdapter(cartItemAdapter);
+    }
+
 
 
 }
