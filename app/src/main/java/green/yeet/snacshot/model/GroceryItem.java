@@ -13,12 +13,13 @@ public class GroceryItem {
     private Map<String, Integer> commitmentDate;
     private Map<String, Integer> expirationDate;
     private Map<String, Double> nutrients;
+    private String uri_string;
 
 
     public GroceryItem(String name,
                        Map<String, Integer> commitmentDate, Map<String, Integer> expirationDate,
                        double calories, double totalFat, double cholesterol,
-                       double sodium, double potassium, double totalCarbohydrates, double sugars, double protein) {
+                       double sodium, double potassium, double totalCarbohydrates, double sugars, double protein, String uri_string) {
 
         this.name = name;
         this.commitmentDate = commitmentDate;
@@ -32,6 +33,7 @@ public class GroceryItem {
         this.nutrients.put("totalCarbohydrates", totalCarbohydrates);
         this.nutrients.put("sugars", sugars);
         this.nutrients.put("protein", protein);
+        this.uri_string = uri_string;
     }
 
     public GroceryItem(String json) {
@@ -64,6 +66,9 @@ public class GroceryItem {
             nutrients.put("totalCarbohydrates", jsonNutrients.getDouble("totalCarbohydrates"));
             nutrients.put("sugars", jsonNutrients.getDouble("sugars"));
             nutrients.put("protein", jsonNutrients.getDouble("protein"));
+            this.nutrients = nutrients;
+
+            this.uri_string = jsonGroceryItem.getString("uri_string");
 
         } catch(JSONException e) {
             e.printStackTrace();
@@ -88,17 +93,19 @@ public class GroceryItem {
             jsonExpirationDate.put("year", this.commitmentDate.get("year"));
             jsonGroceryItem.put("expirationDate", jsonGroceryItem.toString());
 
-            jsonGroceryItem.put("calories", calories);
+            jsonGroceryItem.put("calories", this.calories);
 
             JSONObject jsonNutrients = new JSONObject();
-            jsonNutrients.put("totalFat", nutrients.get("totalFat"));
-            jsonNutrients.put("cholesterol", nutrients.get("cholesterol"));
-            jsonNutrients.put("sodium", nutrients.get("sodium"));
-            jsonNutrients.put("potassium", nutrients.get("potassium"));
-            jsonNutrients.put("totalCarbohydrates", nutrients.get("totalCarbohydrates"));
-            jsonNutrients.put("sugar", nutrients.get("sugar"));
-            jsonNutrients.put("protein", nutrients.get("protein"));
+            jsonNutrients.put("totalFat", this.nutrients.get("totalFat"));
+            jsonNutrients.put("cholesterol", this.nutrients.get("cholesterol"));
+            jsonNutrients.put("sodium", this.nutrients.get("sodium"));
+            jsonNutrients.put("potassium", this.nutrients.get("potassium"));
+            jsonNutrients.put("totalCarbohydrates", this.nutrients.get("totalCarbohydrates"));
+            jsonNutrients.put("sugar", this.nutrients.get("sugar"));
+            jsonNutrients.put("protein", this.nutrients.get("protein"));
             jsonGroceryItem.put("nutrients", jsonNutrients.toString());
+
+            jsonGroceryItem.put("uri_string", this.uri_string);
 
             return jsonGroceryItem.toString();
 
@@ -134,6 +141,10 @@ public class GroceryItem {
 
     public double getNutrient(String key) {
         return this.nutrients.get(key);
+    }
+
+    public String getUriString() {
+        return this.uri_string;
     }
 
 }
