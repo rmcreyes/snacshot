@@ -47,9 +47,9 @@ public class GroceryItem {
 
             Map<String, Integer> expirationDate = new HashMap<String, Integer>();
             JSONObject jsonExpirationDate = new JSONObject(jsonGroceryItem.getString("expirationDate"));
-            commitmentDate.put("day", jsonCommitmentDate.getInt("day"));
-            commitmentDate.put("month", jsonCommitmentDate.getInt("month"));
-            commitmentDate.put("year", jsonCommitmentDate.getInt("year"));
+            commitmentDate.put("day", jsonExpirationDate.getInt("day"));
+            commitmentDate.put("month", jsonExpirationDate.getInt("month"));
+            commitmentDate.put("year", jsonExpirationDate.getInt("year"));
             this.expirationDate = expirationDate;
 
             this.calories = jsonGroceryItem.getDouble("calories");
