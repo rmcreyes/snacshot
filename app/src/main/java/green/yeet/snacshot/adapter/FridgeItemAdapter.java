@@ -12,12 +12,11 @@ import java.util.List;
 import green.yeet.snacshot.R;
 import green.yeet.snacshot.model.GroceryItem;
 
-public class CartItemAdapter extends BaseAdapter {
-
+public class FridgeItemAdapter extends BaseAdapter {
     private List<GroceryItem> groceryItems;
     private LayoutInflater layoutInflater;
 
-    public CartItemAdapter(List<GroceryItem> groceryItems, Context context) {
+    public FridgeItemAdapter(List<GroceryItem> groceryItems, Context context) {
         this.groceryItems = groceryItems;
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -40,24 +39,20 @@ public class CartItemAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        View cartItemView = layoutInflater.inflate(R.layout.detail_cart_item, null);
+        View fridgeItemView = layoutInflater.inflate(R.layout.content_fridge, null);
 
         GroceryItem groceryItem = groceryItems.get(i);
 
-        TextView foodName = cartItemView.findViewById(R.id.food_name);
+        TextView foodName = fridgeItemView.findViewById(R.id.food_name);
         foodName.setText(groceryItem.getName());
 
-        TextView fatVal = cartItemView.findViewById(R.id.fat_value);
-        TextView carbVal = cartItemView.findViewById(R.id.carb_value);
-        TextView proteinVal = cartItemView.findViewById(R.id.protein_value);
-        fatVal.setText(stringifyMacroVal(groceryItem.getNutrient("totalFat")));
-        carbVal.setText(stringifyMacroVal(groceryItem.getNutrient("totalCarbohydrates")));
-        proteinVal.setText(stringifyMacroVal(groceryItem.getNutrient("protein")));
+        TextView expiryDate = fridgeItemView.findViewById(R.id.expiry_date);
+        TextView purchasedDate = fridgeItemView.findViewById(R.id.purchased_date);
+        expiryDate.setText("1/1/19");
+        purchasedDate.setText("1/1/18");
 
-        return cartItemView;
+        return fridgeItemView;
     }
 
-    private String stringifyMacroVal(double val) {
-        return Double.toString(val) + "g";
-    }
+
 }
